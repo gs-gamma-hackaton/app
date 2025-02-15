@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { BrainCircuit, Send } from "lucide-react";
+import PromptInput from "./components/prompt-input";
 
 export default function Page() {
+  
   return (
-    <div className="font-landing flex flex-col">
+    <div className="flex flex-col font-landing">
       <section className="flex min-h-[85vh] w-full flex-col items-center justify-center bg-[url(/images/promo.png)] bg-cover py-8 tracking-wider">
         <div className="max-w-[80%] space-y-6 text-center">
           <BrainCircuit className="inline-block size-16 text-fuchsia-700 duration-1000 animate-in fade-in-20 slide-in-from-top-8" />
@@ -14,26 +16,15 @@ export default function Page() {
             Превратите идеи в мощные и убедительные слайды с помощью
             искусственного интеллекта.
           </h2>
-          <p className="duration-2000 text-xl text-gray-500 animate-in fade-in">
+          <p className="text-xl text-gray-500 animate-in fade-in duration-2000">
             Впечатляющие презентации за минуты. Никакого дизайна и кода – ваш
             контент в центре внимания!
           </p>
-          <div className="duration-2000 relative w-full py-4 animate-in fade-in slide-in-from-left-8">
-            <input
-              className="h-16 w-full rounded bg-primary px-8 py-4"
-              placeholder="Создай стильную презентацию про технологии с краткими и понятными слайдами"
-            />
-            <Button
-              variant="ghost"
-              className="absolute right-2 top-1/2 size-12 -translate-y-1/2 bg-primary"
-            >
-              <Send />
-            </Button>
-          </div>
+          <PromptInput />
         </div>
       </section>
-      <section className="bg-jshine relative flex w-full flex-col items-center justify-center py-8 lg:bg-none">
-        <div className="lg:bg-jshine flex w-[80%] flex-col items-center rounded px-4 py-8 lg:pb-16">
+      <section className="relative flex w-full flex-col items-center justify-center bg-jshine py-8 lg:bg-none">
+        <div className="flex w-[80%] flex-col items-center rounded px-4 py-8 lg:bg-jshine lg:pb-16">
           <h1 className="text-center text-2xl font-bold">
             Воплощаем идеи в жизнь. Мгновенно.
           </h1>
