@@ -42,6 +42,16 @@ class BaseAlchemyRepository(AbstractRepository, Generic[DomainModel], ABC):
 
         return database_instance
 
+    def update_field(self, id: int, field: dict) -> DomainModel:
+        database_instance = self.get(id)
+        for key, value in field.items():
+            setattr(database_instance, key, value)
+        self.session.add(database_instance)
+        self.session.commit()
+        self.session.refresh(database_instance)
+
+        return database_instance
+
     def delete(self, id: int) -> None:
         self.session.query(self.domain_model).filter(self.domain_model.id == id).delete()
         self.session.commit()

@@ -1,5 +1,5 @@
 from fastapi import File, UploadFile
-from pydantic import BaseModel
+from pydantic import BaseModel, Json
 
 
 class PresentationSchema(BaseModel):
@@ -10,3 +10,11 @@ class PresentationSchema(BaseModel):
 class PresentationResponseSchema(BaseModel):
     presentation_id: int
     task_id: int
+
+
+class PresentationCreateSchema(BaseModel):
+    data: Json
+
+
+class PresentationUpdateSchema(PresentationCreateSchema):
+    ...

@@ -4,27 +4,18 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, Form, status, UploadFile
 from fastapi.responses import StreamingResponse
-from minio import Minio
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_session
+from app.api.v1.presentation.serializers import PresentationCreateSchema
 from app.auth.jwt_auth import check_auth
 from app.celery.tasks import send_data_to_ml
-from app.config import settings
 from app.db.models.presentation import Presentation
 from app.repositories.alchemy.presentation import PresentationAlchemyRepository
+from utils.clients.minio import minio_client
 
 
 presentation_api_router = APIRouter()
-
-
-# Инициализация MinIO клиента
-minio_client = Minio(
-    endpoint=settings.MINIO_ENDPOINT,
-    access_key=settings.MINIO_ACCESS_KEY,
-    secret_key=settings.MINIO_SECRET_KEY,
-    secure=False,
-)
 
 
 @presentation_api_router.post(
@@ -75,3 +66,63 @@ async def presentation(
             yield f"data: {{\"status\": \"error\", \"error\": \"{str(e)}\"}}\n\n"
 
     return StreamingResponse(event_generator(), media_type='text/event-stream')
+
+
+@presentation_api_router.post(
+    '/{id}',
+    summary='Создание новой презентации без ИИ',
+    status_code=status.HTTP_201_CREATED,
+)
+async def presentation_create(
+    id: int,
+    json: PresentationCreateSchema,
+    session: Annotated[Session, Depends(get_session)],
+):
+    presentation_repository = PresentationAlchemyRepository(session)
+
+    obj = presentation_repository.update_field(id, {'data': json.data})
+    return obj
+
+
+@presentation_api_router.get(
+    '/',
+    summary='Список всех объектов презентаций',
+    status_code=status.HTTP_201_CREATED,
+)
+async def list_presentation(
+    session: Annotated[Session, Depends(get_session)],
+):
+    presentation_repository = PresentationAlchemyRepository(session)
+
+    objs = presentation_repository.list()
+    return objs
+
+
+@presentation_api_router.get(
+    '/{id}',
+    summary='Получить объект презентации',
+    status_code=status.HTTP_201_CREATED,
+)
+async def retrieve_presentation(
+    id: int,
+    session: Annotated[Session, Depends(get_session)],
+):
+    presentation_repository = PresentationAlchemyRepository(session)
+
+    obj = presentation_repository.get(id)
+    return obj
+
+
+@presentation_api_router.delete(
+    '/{id}',
+    summary='Удаление презентации',
+    status_code=status.HTTP_201_CREATED,
+)
+async def delete_presentation(
+    id: int,
+    session: Annotated[Session, Depends(get_session)],
+):
+    presentation_repository = PresentationAlchemyRepository(session)
+
+    obj = presentation_repository.delete(id)
+    return obj
