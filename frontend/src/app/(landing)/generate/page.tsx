@@ -1,4 +1,6 @@
-import { Import, Sparkles, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Import, Sparkles, User, VibrateOff } from "lucide-react";
+import Link from "next/link";
 import PromptForm from "./components/prompt-form";
 
 export default function Page() {
@@ -50,6 +52,16 @@ export default function Page() {
             <p>Превратите любой документ в презентацию</p>
           </div>
         </button>
+      </div>
+      <div className="fixed left-0 top-0 flex h-screen w-screen flex-col items-center justify-center bg-primary md:hidden">
+        <VibrateOff size={200} />
+        <h1 className="text-2xl font-bold">Упс</h1>
+        <h2 className="text-lg">
+          Мы пока не поддерживаем мобильные устройства
+        </h2>
+        <Button asChild variant="secondary" className="mt-2">
+          <Link href="/">Назад</Link>
+        </Button>
       </div>
     </div>
   );
