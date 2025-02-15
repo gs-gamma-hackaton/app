@@ -12,6 +12,7 @@ import ImageNodeToolbar from "@/components/editor/nodes/image/toolbar";
 import NodeSelectNode from "@/components/editor/nodes/node-select";
 import NodeSelectNodeToolbar from "@/components/editor/nodes/node-select/toolbar";
 import SlideComponent from "@/components/editor/nodes/slide";
+import SlideNodeToolbar from "@/components/editor/nodes/slide/toolbar";
 import TextNode from "@/components/editor/nodes/text";
 import TextNodeToolbar from "@/components/editor/nodes/text/toolbar";
 import {
@@ -63,7 +64,10 @@ const registry: Registry = {
     toolbar: ImageNodeToolbar,
   },
   fragment: FragmentComponent,
-  slide: SlideComponent,
+  slide: {
+    node: SlideComponent,
+    toolbar: SlideNodeToolbar,
+  },
   text: {
     node: TextNode,
     toolbar: TextNodeToolbar,

@@ -27,7 +27,6 @@ const context = createContext<LayoutThemeContext>({
       text: "#000",
       primary: "#000",
       background: "#cccccc",
-      backgroundImage: "/placeholder.svg",
       foreground: "#fff",
     },
     fonts: {
@@ -49,7 +48,6 @@ export const LayoutThemeProvider = ({
         text: "#383838",
         primary: "#008aff",
         background: "#cccccc",
-        backgroundImage: "/placeholder.svg",
         foreground: "#fff",
       },
       fonts: {
