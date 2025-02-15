@@ -1,5 +1,7 @@
 import AlertNode from "@/components/editor/nodes/alert";
 import AlertNodeToolbar from "@/components/editor/nodes/alert/toolbar";
+import CardNode from "@/components/editor/nodes/card";
+import CardNodeToolbar from "@/components/editor/nodes/card/toolbar";
 import FlexNode from "@/components/editor/nodes/flex";
 import FlexNodeToolbar from "@/components/editor/nodes/flex/toolbar";
 import FragmentComponent from "@/components/editor/nodes/fragment";
@@ -24,11 +26,14 @@ import {
   Heading3,
   Image,
   Info,
+  List,
   RectangleHorizontal,
   RectangleVertical,
+  Square,
 } from "lucide-react";
 import {
   createAlertWithText,
+  createCardWithNodeSelect,
   createFlexWithNodeSelect,
   createGridWithNodeSelect,
   createImageNode,
@@ -40,6 +45,10 @@ const registry: Registry = {
   alert: {
     node: AlertNode,
     toolbar: AlertNodeToolbar,
+  },
+  card: {
+    node: CardNode,
+    toolbar: CardNodeToolbar,
   },
   flex: {
     node: FlexNode,
@@ -103,38 +112,52 @@ const menuRegistry: MenuRegistry = [
   },
   {
     title: "Инфо",
-    category: "cards",
+    category: "notes",
     description: "Примечание с информацией",
     icon: Info,
     generator: () => createAlertWithText("info"),
   },
   {
     title: "Предупреждение",
-    category: "cards",
+    category: "notes",
     description: "Примечание с предупреждением",
     icon: CircleAlert,
     generator: () => createAlertWithText("warning"),
   },
   {
     title: "Ошибка",
-    category: "cards",
+    category: "notes",
     description: "Примечание с ошибкой",
     icon: CircleX,
     generator: () => createAlertWithText("error"),
   },
   {
     title: "Вопрос",
-    category: "cards",
+    category: "notes",
     description: "Примечание с вопросом",
     icon: CircleHelp,
     generator: () => createAlertWithText("question"),
   },
   {
     title: "Успех",
-    category: "cards",
+    category: "notes",
     description: "Примечание с успехом",
     icon: CircleCheck,
     generator: () => createAlertWithText("success"),
+  },
+  {
+    title: "Карточка",
+    category: "cards",
+    description: "Простая карточка с фоном",
+    icon: Square,
+    generator: () => createCardWithNodeSelect("simple"),
+  },
+  {
+    title: "Пули",
+    category: "cards",
+    description: "Нумерованный/маркированный список",
+    icon: List,
+    generator: () => createCardWithNodeSelect("bullet"),
   },
   {
     title: "Горизонтальный",
@@ -162,10 +185,11 @@ const menuRegistry: MenuRegistry = [
 const menuRegistryCategories: Record<string, string> = {
   basic: "Базовые блоки",
   containers: "Контейнеры",
+  notes: "Заметки",
   cards: "Карточки",
   search: "Результаты поиска",
 };
 
-const containerNodes = ["alert", "fragment", "slide", "flex", "grid"];
+const containerNodes = ["alert", "fragment", "slide", "flex", "grid", "card"];
 
 export { containerNodes, menuRegistry, menuRegistryCategories, registry };

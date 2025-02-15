@@ -1,4 +1,5 @@
 import { AlertAttributes } from "@/components/editor/nodes/alert";
+import { CardAttributes } from "@/components/editor/nodes/card";
 import { FlexAttributes } from "@/components/editor/nodes/flex";
 import { GridAttributes } from "@/components/editor/nodes/grid";
 import { ImageAttributes } from "@/components/editor/nodes/image";
@@ -41,6 +42,9 @@ export const createGridNode = () =>
     { canHaveChildren: true }
   );
 
+export const createCardNode = (type: CardAttributes["type"]) =>
+  new LayoutNode<CardAttributes>("card", { type }, { canHaveChildren: true });
+
 // == additional helpers ==
 
 export const createFlexWithNodeSelect = (
@@ -55,6 +59,14 @@ export const createFlexWithNodeSelect = (
 
 export const createGridWithNodeSelect = () => {
   const node = createGridNode();
+  const child = createSelectNode(0);
+  setTimeout(() => child.focus(), 0);
+  node.append(child);
+  return node;
+};
+
+export const createCardWithNodeSelect = (type: CardAttributes["type"]) => {
+  const node = createCardNode(type);
   const child = createSelectNode(0);
   setTimeout(() => child.focus(), 0);
   node.append(child);
