@@ -1,4 +1,5 @@
 import ReactQueryProvider from "@/components/context/react-query";
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { inter, raleway } from "./fonts";
 import "./globals.css";
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className={`${raleway.variable} ${inter.variable} antialiased`}>
         <ReactQueryProvider>{children}</ReactQueryProvider>
+        <Toaster />
       </body>
     </html>
   );
