@@ -68,15 +68,16 @@ async def presentation(
     return StreamingResponse(event_generator(), media_type='text/event-stream')
 
 
-@presentation_api_router.post(
+@presentation_api_router.patch(
     '/{id}',
-    summary='Создание новой презентации без ИИ',
-    status_code=status.HTTP_201_CREATED,
+    summary='Обновление презентации',
+    status_code=status.HTTP_200_OK,
 )
-async def presentation_create(
+async def presentation_update(
     id: int,
     json: PresentationCreateSchema,
     session: Annotated[Session, Depends(get_session)],
+    current_user=Depends(check_auth),
 ):
     presentation_repository = PresentationAlchemyRepository(session)
 
@@ -87,21 +88,22 @@ async def presentation_create(
 @presentation_api_router.get(
     '/',
     summary='Список всех объектов презентаций',
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 async def list_presentation(
     session: Annotated[Session, Depends(get_session)],
+    current_user=Depends(check_auth),
 ):
     presentation_repository = PresentationAlchemyRepository(session)
 
-    objs = presentation_repository.list()
+    objs = presentation_repository.filter_by_user(current_user.id)
     return objs
 
 
 @presentation_api_router.get(
     '/{id}',
     summary='Получить объект презентации',
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 async def retrieve_presentation(
     id: int,
@@ -116,13 +118,35 @@ async def retrieve_presentation(
 @presentation_api_router.delete(
     '/{id}',
     summary='Удаление презентации',
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 async def delete_presentation(
     id: int,
     session: Annotated[Session, Depends(get_session)],
+    current_user=Depends(check_auth),
 ):
     presentation_repository = PresentationAlchemyRepository(session)
 
     obj = presentation_repository.delete(id)
+    return obj
+
+
+@presentation_api_router.post(
+    '/without-neuron',
+    summary='Создание без ИИ',
+    status_code=status.HTTP_201_CREATED,
+)
+async def presentation_create_without_neuron(
+    json: PresentationCreateSchema,
+    session: Annotated[Session, Depends(get_session)],
+    current_user=Depends(check_auth),
+):
+    presentation_repository = PresentationAlchemyRepository(session)
+
+    obj = Presentation(
+        data=json.data,
+        user_id=current_user.id,
+    )
+    presentation_repository.create(obj)
+
     return obj

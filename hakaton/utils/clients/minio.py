@@ -1,6 +1,6 @@
 from minio import Minio
-from app.config import settings
 
+from app.config import settings
 
 
 # Инициализация MinIO клиента
