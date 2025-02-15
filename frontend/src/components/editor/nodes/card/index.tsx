@@ -26,7 +26,10 @@ const CardNode: LayoutNodeComponent<CardAttributes> = ({ node }) => {
   useEffect(() => {
     if (index != null) return;
     const total = node.parent!.children.filter(
-      (c: LayoutNode<any>) => c.type == "card" && c.attributes.type == "bullet"
+      (c: LayoutNode<any>) =>
+        c.type == "card" &&
+        c.attributes.type == "bullet" &&
+        c.index <= sNode.index
     ).length;
     setIndex(total > 0 ? total : 1);
   });
@@ -47,7 +50,7 @@ const CardNode: LayoutNodeComponent<CardAttributes> = ({ node }) => {
     >
       {type == "bullet" && (
         <div
-          className="mr-2 flex size-12 items-center justify-center rounded font-bold text-white"
+          className="mr-2 flex aspect-square size-12 items-center justify-center rounded font-bold text-white"
           style={{
             backgroundColor: theme.colors.primary,
           }}

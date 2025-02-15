@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { EventDispatcher, EventEmitter } from "../event";
-import { containerNodes } from "./registry";
+import { containerNodes, fwNodes } from "./registry";
 import { LayoutNodeAttributes, LayoutNodeSerialized } from "./types";
 
 export const TreeUpdateEvent = "nodeTreeUpdate";
@@ -13,6 +13,7 @@ interface LayoutNodeOptions {
   selectable: boolean;
   destroyOnEmpty: boolean;
   canHaveChildren: boolean;
+  fullWidth: boolean;
 }
 
 export class LayoutNode<T extends LayoutNodeAttributes>
@@ -24,6 +25,7 @@ export class LayoutNode<T extends LayoutNodeAttributes>
   selectable: boolean = true;
   destroyOnEmpty: boolean = false;
   canHaveChildren: boolean = false;
+  fullWidth: boolean = false;
 
   private _id: string;
   private _dispatcher = new EventEmitter();
@@ -64,6 +66,7 @@ export class LayoutNode<T extends LayoutNodeAttributes>
   static from(serialized: LayoutNodeSerialized) {
     const node = new LayoutNode(serialized.type, serialized.attributes);
     node.canHaveChildren = containerNodes.includes(serialized.type);
+    node.fullWidth = fwNodes.includes(serialized.type);
     node.children = serialized.children.map((c) => {
       const child = LayoutNode.from(c);
       child.parent = node;

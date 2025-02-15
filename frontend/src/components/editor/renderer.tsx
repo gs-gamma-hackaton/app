@@ -176,8 +176,14 @@ const NodeRenderer: LayoutNodeComponent<any> = ({ node }) => {
   const Element = node.type == "slide" ? NodeSlideWrapper : "div";
   const ContextMenu = editable ? RendererContextMenu : "div";
   return (
-    <ContextMenu node={node} className={node.depth <= 1 ? "w-full" : ""}>
-      <Element node={node} className="node-container relative box-content">
+    <ContextMenu node={node} className={node.depth <= 1000 ? "w-full" : ""}>
+      <Element
+        node={node}
+        className={cn(
+          "node-container relative box-content",
+          node.fullWidth && "w-full"
+        )}
+      >
         {node.selectable && editable && (
           <RendererToolbar
             node={node}

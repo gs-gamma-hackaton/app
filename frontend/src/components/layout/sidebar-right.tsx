@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
-import { Palette, SquareMousePointer } from "lucide-react";
+import { Palette, Sparkle, SquareMousePointer } from "lucide-react";
 import { HTMLAttributes } from "react";
 import { Button, ButtonProps } from "../ui/button";
 import ElementSelect from "./sheet/element-select";
+import TemplateSelect from "./sheet/template-select";
 import ThemeSelect from "./sheet/theme-select";
 
 export default function SidebarRight({
@@ -11,7 +12,7 @@ export default function SidebarRight({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={cn("relative z-10", className)} {...props}>
-      <nav className="bg-background-overlay fixed flex h-full w-20 flex-col items-center justify-start border-l border-primary p-2">
+      <nav className="fixed flex h-full w-20 flex-col items-center justify-start border-l border-primary bg-background-overlay p-2">
         <ThemeSelect>
           <SidebarButton>
             <Palette />
@@ -25,6 +26,12 @@ export default function SidebarRight({
             Элементы
           </SidebarButton>
         </ElementSelect>
+        <TemplateSelect>
+          <SidebarButton>
+            <Sparkle />
+            Шаблоны
+          </SidebarButton>
+        </TemplateSelect>
       </nav>
     </div>
   );

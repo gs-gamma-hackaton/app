@@ -1,4 +1,5 @@
 import { useGlobalStore } from "@/components/context/store";
+import TemplateSelect from "@/components/layout/sheet/template-select";
 import { Button } from "@/components/ui/button";
 import Confirm from "@/components/ui/confirm";
 import {
@@ -40,9 +41,11 @@ const SlideComponentToolbar: LayoutNodeComponent<SlideAttributes> = ({
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button className="size-8" variant="secondary">
-              <Plus />
-            </Button>
+            <TemplateSelect>
+              <Button className="size-8" variant="secondary">
+                <Plus />
+              </Button>
+            </TemplateSelect>
           </TooltipTrigger>
           <TooltipContent side="left">Создать слайд</TooltipContent>
         </Tooltip>

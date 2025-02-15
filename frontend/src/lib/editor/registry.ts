@@ -191,5 +191,12 @@ const menuRegistryCategories: Record<string, string> = {
 };
 
 const containerNodes = ["alert", "fragment", "slide", "flex", "grid", "card"];
+const fwNodes = ["card"];
 
-export { containerNodes, menuRegistry, menuRegistryCategories, registry };
+export {
+  containerNodes,
+  fwNodes,
+  menuRegistry,
+  menuRegistryCategories,
+  registry,
+};
