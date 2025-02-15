@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Import, Sparkles, User, VibrateOff } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 import PromptForm from "./components/prompt-form";
 
 export default function Page() {
@@ -14,7 +15,9 @@ export default function Page() {
           От концепта до презентации - 1 шаг
         </h2>
       </div>
-      <PromptForm />
+      <Suspense>
+        <PromptForm />
+      </Suspense>
       <div className="flex w-full items-center justify-center gap-2 text-gray-500">
         <div className="h-0.5 flex-grow rounded bg-primary"></div>
         <p>или</p>
