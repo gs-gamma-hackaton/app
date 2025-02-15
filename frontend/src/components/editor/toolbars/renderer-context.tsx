@@ -36,7 +36,7 @@ export default function RendererContextMenu({
 
   return (
     <ContextMenu {...props}>
-      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuContent className="w-64">
         {node.canHaveChildren && (
           <ContextMenuItem onClick={() => performAction(node, "create")}>
