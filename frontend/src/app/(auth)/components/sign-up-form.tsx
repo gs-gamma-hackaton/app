@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { HTMLAttributes } from "react";
 import { useForm, useFormContext } from "react-hook-form";
+import { register } from "../actions/sign-up";
 
 export default function SignUpForm() {
   return (
@@ -36,9 +37,7 @@ function SignUpFormProvider({
   const form = useForm<SignUpData>({
     resolver: zodResolver(signUpForm),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      middleName: "",
+      username: "",
       email: "",
       password: "",
       passwordConfirm: "",
@@ -48,11 +47,11 @@ function SignUpFormProvider({
   const router = useRouter();
 
   const handleSubmit = async (data: SignUpData) => {
-    const [ok, errorMessage] = [false, "err"]; //await SignUp(data);
+    const [ok, errorMessage] = await register(data);
     const message = ok ? "Добро пожаловать!" : errorMessage!;
     toast({ title: message });
 
-    if (ok) router.push("/");
+    if (ok) router.push("/generate");
   };
 
   return (
@@ -74,9 +73,22 @@ function SignUpFormContent() {
         name="email"
         render={({ field }) => (
           <Form.FormItem>
-            <Form.FormLabel>Логин</Form.FormLabel>
+            <Form.FormLabel>Электронная почта</Form.FormLabel>
             <Form.FormControl>
               <Input placeholder="admin@admin.ru" {...field} />
+            </Form.FormControl>
+            <Form.FormMessage />
+          </Form.FormItem>
+        )}
+      />
+      <Form.FormField
+        control={form.control}
+        name="username"
+        render={({ field }) => (
+          <Form.FormItem>
+            <Form.FormLabel>Логин</Form.FormLabel>
+            <Form.FormControl>
+              <Input placeholder="User" {...field} />
             </Form.FormControl>
             <Form.FormMessage />
           </Form.FormItem>
@@ -88,6 +100,19 @@ function SignUpFormContent() {
         render={({ field }) => (
           <Form.FormItem>
             <Form.FormLabel>Пароль</Form.FormLabel>
+            <Form.FormControl>
+              <Input type="password" placeholder="●●●●●●●●" {...field} />
+            </Form.FormControl>
+            <Form.FormMessage />
+          </Form.FormItem>
+        )}
+      />
+      <Form.FormField
+        control={form.control}
+        name="passwordConfirm"
+        render={({ field }) => (
+          <Form.FormItem>
+            <Form.FormLabel>Подтвердите пароль</Form.FormLabel>
             <Form.FormControl>
               <Input type="password" placeholder="●●●●●●●●" {...field} />
             </Form.FormControl>
@@ -107,7 +132,7 @@ function SignUpButton() {
       type="submit"
       loading={formState.isSubmitting}
     >
-      Вход
+      Регистрация
     </LoadingButton>
   );
 }

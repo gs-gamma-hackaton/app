@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { HTMLAttributes } from "react";
 import { useForm, useFormContext } from "react-hook-form";
+import { signIn } from "../actions/sign-in";
 
 export default function SignInForm() {
   return (
@@ -45,11 +46,11 @@ function SignInFormProvider({
   const router = useRouter();
 
   const handleSubmit = async (data: AuthCredentials) => {
-    const [ok, errorMessage] = [false, "err"]; //await signIn(data);
+    const [ok, errorMessage] = await signIn(data);
     const message = ok ? "Добро пожаловать!" : errorMessage!;
     toast({ title: message });
 
-    if (ok) router.push("/");
+    if (ok) router.push("/profile");
   };
 
   return (
