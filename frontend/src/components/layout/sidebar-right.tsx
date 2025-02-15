@@ -14,7 +14,7 @@ export default function SidebarRight({
     <div className={cn("relative z-10", className)} {...props}>
       <nav className="fixed flex h-full w-20 flex-col items-center justify-start border-l border-primary bg-background-overlay p-2">
         <ThemeSelect>
-          <SidebarButton>
+          <SidebarButton id="tutorial-theme">
             <Palette />
             Тема
           </SidebarButton>
@@ -27,7 +27,7 @@ export default function SidebarRight({
           </SidebarButton>
         </ElementSelect>
         <TemplateSelect>
-          <SidebarButton>
+          <SidebarButton id="tutorial-templates">
             <Sparkle />
             Шаблоны
           </SidebarButton>

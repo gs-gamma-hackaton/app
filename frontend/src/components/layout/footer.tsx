@@ -23,7 +23,10 @@ export default function Footer({
   }, [eventData]);
 
   return (
-    <footer className="fixed bottom-0 left-0 z-20 flex !h-8 w-full items-center justify-between gap-2 border-t border-primary bg-background-overlay px-4">
+    <footer
+      id="tutorial-footer"
+      className="fixed bottom-0 left-0 z-20 flex !h-8 w-full items-center justify-between gap-2 border-t border-primary bg-background-overlay px-4"
+    >
       <div className="flex items-center gap-2 align-middle">
         {keys.map((k, i) => (
           <div key={i} className="space-x-2 text-xs">

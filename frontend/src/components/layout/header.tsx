@@ -76,18 +76,18 @@ export default function Header({
             <ChevronRight className="hidden size-4 text-primary-foreground/50 lg:block" />
             <p className="hidden lg:block">Презентация без названия</p>
           </div>
-          <SnapshotButtons className="hidden md:block" />
+          <SnapshotButtons className="hidden md:block" id="tutorial-snapshot" />
         </div>
         <SlidesBlock />
         <div className="flex items-center justify-end gap-2">
           <Button className="bg-blue-500 hover:bg-blue-400" asChild>
-            <a href={`/present/${id}`} target="_blank">
+            <a href={`/present/${id}`} target="_blank" id="tutorial-view">
               <Play />
               Презентация
             </a>
           </Button>
           <Button variant="ghost" className="size-8" asChild>
-            <a href={`/render/${id}`} target="_blank">
+            <a href={`/render/${id}`} target="_blank" id="tutorial-download">
               <Download />
             </a>
           </Button>
