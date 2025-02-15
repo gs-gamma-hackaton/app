@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: green-skills
+    volumes:
+      - .:/app
+    ports:
+      - 8020:8010
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    networks:
+      - green
+
+  db:
+    image: postgres:16
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      - green
+
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    command: redis-server
+    ports:
+      - "6379:6379"
+    networks:
+      - green
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: green-skills_celery_worker
+    command: celery -A app.celery.worker worker -l INFO
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    networks:
+      - green
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - ./media/:/data
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    env_file:
+      - .env
+    command: server --console-address ":9090" /data
+    networks:
+      - green
+
+#  celery_beat:
+#    build:
+#      context: .
+#      dockerfile: ./compose/local/fastapi/Dockerfile
+#    image: fastapi_celery_example_celery_beat
+#    command: /start-celerybeat
+#    volumes:
+#      - .:/app
+#    env_file:
+#      - .env
+#    depends_on:
+#      - redis
+#      - db
+
+#  flower:
+#    build:
+#      context: .
+#      dockerfile: ./compose/local/fastapi/Dockerfile
+#    image: fastapi_celery_example_celery_flower
+#    command: /start-flower
+#    volumes:
+#      - .:/app
+#    env_file:
+#      - .env/.dev-sample
+#    ports:
+#      - 5557:5555
+#    depends_on:
+#      - redis
+#      - db
+
+volumes:
+  postgres_data:
+
+networks:
+  green:
+    external:
+      name: green_external

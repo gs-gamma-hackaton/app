@@ -1,0 +1,6 @@
+# docker-compose databases storage
+/storage/
+docker-compose
+docker-compose.dev.yml
+.gitlab-ci.yml
+deploy.sh
