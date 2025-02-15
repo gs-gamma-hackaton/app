@@ -42,7 +42,7 @@ export default function TemplateSelect({ children }: PropsWithChildren) {
             Выберите готовый шаблон под вашу идею
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-full py-4">
+        <ScrollArea className="h-[512px] py-4">
           <ul className="grid grid-cols-3 gap-4">
             {registry.map((entry, i) => (
               <li key={i}>
