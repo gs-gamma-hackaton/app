@@ -1,0 +1,12 @@
+.node-container > .node-handle {
+  display: none;
+}
+.node-container:hover > .node-handle,
+.node-container:focus-visible > .node-handle,
+.node-container:focus-within > .node-handle,
+.node-container:focus > .node-handle {
+  display: block;
+}
+.node-handle:hover + .node-wrapper {
+  @apply border-blue-300;
+}

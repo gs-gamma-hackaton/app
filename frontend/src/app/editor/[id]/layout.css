@@ -1,0 +1,31 @@
+.editor-layout {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 192px 1fr 80px;
+  grid-template-rows: 48px 1fr min-content;
+
+  grid-template-areas:
+    "header header header"
+    "nav viewport bar"
+    "footer footer bar";
+}
+.editor-layout > * {
+  width: 100%;
+  height: 100%;
+}
+
+.editor-layout-header {
+  grid-area: header;
+}
+.editor-layout-nav {
+  grid-area: nav;
+}
+.editor-layout-bar {
+  grid-area: bar;
+}
+.editor-layout-viewport {
+  grid-area: viewport;
+}
+.editor-layout-footer {
+  grid-area: footer;
+}
