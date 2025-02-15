@@ -109,7 +109,7 @@ const SlideComponent: LayoutNodeComponent<SlideAttributes> = ({ node }) => {
       ref={ref}
       className={cn(
         "relative w-full min-w-[768px] border-2 border-transparent p-6",
-        active && "border-blue-500",
+        active && editable && "border-blue-500",
         editable ? "aspect-video w-[768px]" : "h-screen",
         buildClasses(node)
       )}

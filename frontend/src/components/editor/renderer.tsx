@@ -227,7 +227,7 @@ const NodeSlideWrapper: LayoutNodeComponent<any> = ({
     };
   }, []);
 
-  return <div ref={ref} {...props}></div>;
+  return <div ref={ref} id={`slide-${node.index}`} {...props}></div>;
 };
 
 export { NodeRenderer, NodeRootRenderer };

@@ -86,8 +86,10 @@ export default function Header({
               Презентация
             </a>
           </Button>
-          <Button variant="ghost" className="size-8">
-            <Download />
+          <Button variant="ghost" className="size-8" asChild>
+            <a href={`/render/${id}`} target="_blank">
+              <Download />
+            </a>
           </Button>
           <Button variant="ghost" className="size-8">
             <Ellipsis />
