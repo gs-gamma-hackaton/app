@@ -58,16 +58,44 @@ class Chatbot:
         return self.embedding_model.encode(text).tolist()
 
     def process_json(self, input_json):
-        """Обрабатывает JSON: добавляет summary_chunk и эмбеддинги."""
+        """
+        Обрабатывает JSON: добавляет summary_chunk и эмбеддинги.
+
+        Args:
+            input_json: Список словарей или строк
+
+        Returns:
+            Обработанный список со всеми необходимыми полями
+        """
+        processed_data = []
+
         for entry in input_json:
-            text = entry["text"]
+            try:
+                if isinstance(entry, str):  # Если входной элемент - строка
+                    # Создаем словарь из строки
+                    processed_entry = {
+                        "text": entry,
+                        "summary_chunk": "",
+                        "embedding_text": [],
+                        "embedding_summary": []
+                    }
+                elif isinstance(entry, dict):  # Если входной элемент - словарь
+                    processed_entry = entry.copy()
+                else:
+                    continue
 
-            # Генерация краткого описания
-            summary = self.predict(text)
-            entry["summary_chunk"] = summary
+                # Генерация краткого описания
+                summary = self.predict(processed_entry["text"])
+                processed_entry["summary_chunk"] = summary
 
-            # Эмбеддинги для оригинального текста и краткого описания
-            entry["embedding_text"] = self.get_embedding(text)
-            entry["embedding_summary"] = self.get_embedding(summary)
+                # Эмбеддинги для оригинального текста и краткого описания
+                processed_entry["embedding_text"] = self.get_embedding(processed_entry["text"])
+                processed_entry["embedding_summary"] = self.get_embedding(summary)
 
-        return input_json
+                processed_data.append(processed_entry)
+
+            except Exception as e:
+                print(f"Ошибка при обработке записи: {str(e)}")
+                continue
+
+        return processed_data
