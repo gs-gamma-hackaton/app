@@ -159,8 +159,8 @@ async def presentation_create_without_neuron(
     status_code=status.HTTP_201_CREATED,
 )
 async def test_function(
-    bucket_name,
-    path_to_file,
+    bucket_name: str,
+    path_to_file: str,
     session: Annotated[Session, Depends(get_session)],
 ):
     from utils.parsing.chat_bot.chat_bot import Chatbot
