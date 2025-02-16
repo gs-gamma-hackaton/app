@@ -62,8 +62,8 @@ async def presentation(
             yield f"data: {{\"status\": \"processing\", \"message\": \"Начало обработки\", \"pres_id\": {presentation_db_object.id}}}\n\n"
             if filename and bucket_name:
                 result = await send_data_to_ml(
-                    filename=filename,
-                    bucket_name=bucket_name,
+                    bucket=bucket_name,
+                    object_name=filename,
                     prompts=prompts,
                 )
             else:

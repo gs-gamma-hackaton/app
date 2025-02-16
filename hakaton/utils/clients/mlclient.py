@@ -11,6 +11,21 @@ from utils.clients.http import HTTPAPIClient
 
 
 class MlClient(HTTPAPIClient):
+    def __init__(self, base_url: str):
+        super().__init__()
+        self.base_url = base_url
+        self._session = None
+
+    async def __aenter__(self):
+        """Initialize the client session when entering async context"""
+        self._session = await self._get_session()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Clean up the session when leaving async context"""
+        if self._session:
+            await self.close_session()
+
     async def _get_session(self) -> aiohttp.ClientSession:
         if not self._session:
             self._session = aiohttp.ClientSession(
@@ -20,39 +35,39 @@ class MlClient(HTTPAPIClient):
         return self._session
 
     async def request(
-        self,
-        method: str,
-        uri: str,
-        params: dict[str, Any] | None = None,
-        data: Any | None = None,
-        json: Any | None = None,
-        headers: dict[str, str] | None = None,
-        timeout: int | None = None,
+            self,
+            method: str,
+            uri: str,
+            params: dict[str, Any] | None = None,
+            data: Any | None = None,
+            json: Any | None = None,
+            headers: dict[str, str] | None = None,
+            timeout: int | None = None,
     ) -> aiohttp.ClientResponse:
         session = await self._get_session()
         url = urljoin(self.base_url, uri)
         merged_headers = {**(headers or {}), **self.general_headers}
 
         async with session.request(
-            method=method,
-            url=url,
-            params=params,
-            data=data,
-            json=json,
-            headers=merged_headers,
-            timeout=timeout,
+                method=method,
+                url=url,
+                params=params,
+                data=data,
+                json=json,
+                headers=merged_headers,
+                timeout=timeout,
         ) as response:
             response.raise_for_status()
             return response
 
     async def post(
-        self,
-        uri: str,
-        params: dict[str, Any] | None = None,
-        data: Any | None = None,
-        json: Any | None = None,
-        headers: dict[str, str] | None = None,
-        timeout: int | None = None,
+            self,
+            uri: str,
+            params: dict[str, Any] | None = None,
+            data: Any | None = None,
+            json: Any | None = None,
+            headers: dict[str, str] | None = None,
+            timeout: int | None = None,
     ) -> aiohttp.ClientResponse:
         return await self.request(
             method='POST',

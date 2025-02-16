@@ -90,3 +90,4 @@ uvicorn==0.24.0.post1
 vine==5.1.0
 virtualenv==20.25.0
 wcwidth==0.2.12
+requests-toolbelt==1.0.0
