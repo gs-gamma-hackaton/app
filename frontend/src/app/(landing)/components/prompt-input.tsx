@@ -1,6 +1,8 @@
 "use client";
 
+import { AuthResult } from "@/api/auth";
 import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/auth/session";
 import { Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,8 +10,14 @@ import { useState } from "react";
 export default function PromptInput() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("");
-  const handleSubmit = (e: any) => {
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const authData = await getSession<AuthResult>();
+    if (!authData) {
+      router.push("/sign-in");
+      return;
+    }
     router.push("/generate?search=" + encodeURI(prompt));
   };
 
