@@ -1,159 +1,38 @@
 "use client";
 
+import { get } from "@/api/presentation";
 import { NodeRootRenderer } from "@/components/editor/renderer";
+import { useThemeContext } from "@/components/editor/theme/provider";
+import { createFragmentNode } from "@/lib/editor/helpers";
 import { LayoutNode } from "@/lib/editor/node";
+import { useQuery } from "@tanstack/react-query";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
-import { CheckCircle, LoaderCircle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CheckCircle, CircleX, LoaderCircle } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
   const [finished, setFinished] = useState(false);
-  const root = LayoutNode.from({
-    type: "fragment",
-    attributes: {},
-    children: [
-      {
-        type: "slide",
-        attributes: {},
-        children: [
-          {
-            type: "text",
-            attributes: {
-              text: "Привет, мир 1!",
-              fontSize: "h1",
-              bold: true,
-            },
-            children: [],
-          },
-          {
-            type: "text",
-            attributes: {
-              text: "Это пример текста для слайда",
-            },
-            children: [],
-          },
-          {
-            type: "flex",
-            attributes: {
-              direction: "row",
-            },
-            children: [
-              {
-                type: "image",
-                attributes: {
-                  url: "/img.webp",
-                  width: 256,
-                  height: 256,
-                },
-                children: [],
-              },
-              {
-                type: "text",
-                attributes: {
-                  text: "Lorem Ipsum...",
-                },
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: "slide",
-        attributes: {},
-        children: [
-          {
-            type: "text",
-            attributes: {
-              text: "Привет, мир 2!",
-              fontSize: "h1",
-              bold: true,
-            },
-            children: [],
-          },
-          {
-            type: "text",
-            attributes: {
-              text: "Это пример текста для слайда",
-            },
-            children: [],
-          },
-          {
-            type: "flex",
-            attributes: {
-              direction: "row",
-            },
-            children: [
-              {
-                type: "image",
-                attributes: {
-                  url: "https://ir-3.ozone.ru/s3/multimedia-x/wc1000/6761494617.jpg",
-                  width: 256,
-                  height: 256,
-                },
-                children: [],
-              },
-              {
-                type: "text",
-                attributes: {
-                  text: "Lorem Ipsum...",
-                },
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
 
-      {
-        type: "slide",
-        attributes: {},
-        children: [
-          {
-            type: "text",
-            attributes: {
-              text: "Привет, мир 3!",
-              fontSize: "h1",
-              bold: true,
-            },
-            children: [],
-          },
-          {
-            type: "text",
-            attributes: {
-              text: "Это пример текста для слайда",
-            },
-            children: [],
-          },
-          {
-            type: "flex",
-            attributes: {
-              direction: "row",
-            },
-            children: [
-              {
-                type: "image",
-                attributes: {
-                  url: "/img.webp",
-                  width: 256,
-                  height: 256,
-                },
-                children: [],
-              },
-              {
-                type: "text",
-                attributes: {
-                  text: "Lorem Ipsum...",
-                },
-                children: [],
-              },
-            ],
-          },
-        ],
-      },
-    ],
+  const { id } = useParams();
+  const { data, isLoading, isError, isSuccess } = useQuery({
+    queryKey: ["presentation", id],
+    queryFn: () => get(parseInt(id as string)),
   });
+  const { theme, setTheme } = useThemeContext();
+
+  const root = useMemo(() => {
+    const node = createFragmentNode();
+    if (!data) return node;
+    data!.data.content.forEach((slide) => node.append(LayoutNode.from(slide)));
+    return node;
+  }, [data]);
+
+  useEffect(() => {
+    if (!data) return;
+    setTheme(data.data.theme);
+  }, [data]);
 
   useEffect(() => {
     async function doRender() {
@@ -181,8 +60,27 @@ export default function Home() {
       await pdf.save("document.pdf", { returnPromise: true });
       setFinished(true);
     }
-    setTimeout(doRender, 100);
-  }, []);
+    if (isSuccess) setTimeout(doRender, 100);
+  }, [isSuccess]);
+
+  if (isLoading) {
+    return (
+      <div className="fixed left-0 top-0 z-40 flex h-screen w-screen flex-col items-center justify-center gap-4 bg-background">
+        <LoaderCircle className="animate-spin" />
+        <p>Загрузка...</p>
+      </div>
+    );
+  }
+  if (isError) {
+    return (
+      <div className="fixed left-0 top-0 z-50 flex h-screen w-screen flex-col items-center justify-center gap-4 bg-background">
+        <CircleX className="text-destructive" />
+        <p>При загрузке произошла ошибка</p>
+      </div>
+    );
+  }
+
+  if (!data) return <></>;
 
   return (
     <>

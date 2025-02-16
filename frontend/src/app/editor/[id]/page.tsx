@@ -9,7 +9,7 @@ import { Presentation } from "@/lib/editor/types";
 import { useQuery } from "@tanstack/react-query";
 import { CircleX, LoaderCircle } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Home() {
   const { id } = useParams();
@@ -20,7 +20,12 @@ export default function Home() {
   const { theme, setTheme } = useThemeContext();
   const [presentation, setPresentation] = useState<Presentation | null>(null);
 
-  const root = createFragmentNode();
+  const root = useMemo(() => {
+    const node = createFragmentNode();
+    if (!data) return node;
+    data!.data.content.forEach((slide) => node.append(LayoutNode.from(slide)));
+    return node;
+  }, [data]);
 
   useEffect(() => {
     if (!data) return;
@@ -57,8 +62,6 @@ export default function Home() {
       </div>
     );
   }
-
-  data!.data.content.forEach((slide) => root.append(LayoutNode.from(slide)));
 
   return <NodeRootRenderer node={root} editable />;
 }
