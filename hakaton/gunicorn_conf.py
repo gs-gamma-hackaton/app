@@ -6,3 +6,4 @@ workers = settings.WORKERS
 accesslog = '-'
 errorlog = '-'
 worker_class = 'uvicorn.workers.UvicornWorker'
+timeout = 300

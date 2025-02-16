@@ -17,7 +17,7 @@ class Chatbot:
         self.stop_token_ids = stop_token_ids
 
         openai_api_key = "EMPTY"
-        self.client = OpenAI(api_key=settings.OPENAPI_KEY, base_url=self.model_url)
+        self.client = OpenAI(api_key=openai_api_key, base_url=self.model_url)
 
         self.embedding_model = SentenceTransformer('BAAI/bge-m3')
 
