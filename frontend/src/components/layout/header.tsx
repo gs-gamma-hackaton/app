@@ -1,4 +1,7 @@
+import { get, update } from "@/api/presentation";
+import RenameDialog from "@/app/editor/rename-dialog";
 import { cn } from "@/lib/utils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   ArrowRight,
@@ -64,17 +67,37 @@ export default function Header({
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
   const { id } = useParams();
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["presentation", id],
+    queryFn: () => get(parseInt(id as string)),
+  });
+
+  const doRename = async (name: string) => {
+    const presentation = await get(parseInt(id as string));
+    presentation.data.name = name;
+    await update(parseInt(id as string), presentation.data);
+    queryClient.invalidateQueries({ queryKey: ["presentation", id] });
+  };
 
   return (
     <div className={cn("relative z-10", className)} {...props}>
       <header className="fixed grid h-12 w-full grid-cols-3 border-b border-primary bg-background-overlay px-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Link href="/">
+            <Link href="/profile">
               <Home className="size-4 text-primary-foreground/50 hover:text-primary-foreground" />
             </Link>
             <ChevronRight className="hidden size-4 text-primary-foreground/50 lg:block" />
-            <p className="hidden lg:block">Презентация без названия</p>
+            <p className="hidden lg:block">
+              {data?.data.name ?? "Загрузка..."}
+              <span className="ml-2">
+                <RenameDialog
+                  initial={data?.data.name ?? ""}
+                  onValueChange={doRename}
+                />
+              </span>
+            </p>
           </div>
           <SnapshotButtons className="hidden md:block" id="tutorial-snapshot" />
         </div>

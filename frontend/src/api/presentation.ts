@@ -22,6 +22,10 @@ export async function get(id: number) {
   return await apiFetch<PresentationResponse>(`/api/v1/presentation/${id}`);
 }
 
+export async function list() {
+  return await apiFetch<PresentationResponse[]>(`/api/v1/presentation`);
+}
+
 export async function update(id: number, data: Presentation) {
   return await apiFetch<PresentationResponse>(
     `/api/v1/presentation/${id}`,
@@ -30,4 +34,10 @@ export async function update(id: number, data: Presentation) {
       method: "PATCH",
     }
   );
+}
+
+export async function remove(id: number) {
+  return await apiFetch<void>(`/api/v1/presentation/${id}`, undefined, {
+    method: "DELETE",
+  });
 }

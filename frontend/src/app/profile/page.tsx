@@ -1,6 +1,8 @@
 "use client";
 
+import { list, remove } from "@/api/presentation";
 import { Button } from "@/components/ui/button";
+import Confirm from "@/components/ui/confirm";
 import {
   Table,
   TableBody,
@@ -10,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createNewPresentation } from "@/lib/slide";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ExternalLink,
   Import,
@@ -17,10 +20,20 @@ import {
   Sparkles,
   Trash,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Page() {
   const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  const client = useQueryClient();
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["presentations"],
+    queryFn: list,
+  });
+
   return (
     <section>
       <h1 className="text-2xl font-bold">Мои презентации</h1>
@@ -61,46 +74,42 @@ export default function Page() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow className="group">
-            <TableCell>
-              <Presentation />
-            </TableCell>
-            <TableCell className="group-hover:text-gray-300">
-              Презентация 1
-            </TableCell>
-            <TableCell className="flex justify-end gap-2">
-              <Button variant={"ghost"} size={"icon"}>
-                <ExternalLink />
-              </Button>
-              <Button
-                variant={"ghost"}
-                size={"icon"}
-                className="hover:bg-destructive hover:text-destructive-foreground"
-              >
-                <Trash />
-              </Button>
-            </TableCell>
-          </TableRow>
-          <TableRow className="group">
-            <TableCell>
-              <Presentation />
-            </TableCell>
-            <TableCell className="group-hover:text-gray-300">
-              Презентация 1
-            </TableCell>
-            <TableCell className="flex justify-end gap-2">
-              <Button variant={"ghost"} size={"icon"}>
-                <ExternalLink />
-              </Button>
-              <Button
-                variant={"ghost"}
-                size={"icon"}
-                className="hover:bg-destructive hover:text-destructive-foreground"
-              >
-                <Trash />
-              </Button>
-            </TableCell>
-          </TableRow>
+          {data?.map((item) => (
+            <TableRow className="group" key={item.id}>
+              <TableCell>
+                <Presentation />
+              </TableCell>
+              <TableCell className="group-hover:text-gray-300">
+                {item.data.name}
+              </TableCell>
+              <TableCell className="flex justify-end gap-2">
+                <Button variant={"ghost"} size={"icon"} asChild>
+                  <Link href={`/editor/${item.id}`} prefetch={false}>
+                    <ExternalLink />
+                  </Link>
+                </Button>
+                <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  className="hover:bg-destructive hover:text-destructive-foreground"
+                  onClick={() => setOpen(true)}
+                >
+                  <Trash />
+                </Button>
+                <Confirm
+                  open={open}
+                  onOpenChange={setOpen}
+                  onConfirm={async () => {
+                    await remove(item.id);
+                    client.invalidateQueries({ queryKey: ["presentations"] });
+                  }}
+                >
+                  Вы действительно хотите удалить презентацию? Это действие
+                  необратимо!
+                </Confirm>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </section>
