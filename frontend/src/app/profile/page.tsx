@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -7,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { createNewPresentation } from "@/lib/slide";
 import {
   ExternalLink,
   Import,
@@ -14,13 +17,21 @@ import {
   Sparkles,
   Trash,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   return (
     <section>
       <h1 className="text-2xl font-bold">Мои презентации</h1>
       <div className="mt-4 grid w-full grid-cols-3 gap-4">
-        <button className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110">
+        <button
+          className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110"
+          onClick={async () => {
+            const result = await createNewPresentation();
+            router.push(`/editor/${result.id}`);
+          }}
+        >
           <div className="w-min rounded bg-black/15 p-2">
             <Sparkles />
           </div>

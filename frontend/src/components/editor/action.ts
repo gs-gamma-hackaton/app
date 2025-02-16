@@ -31,8 +31,10 @@ export function performAction(
   node: LayoutNode<any>,
   action: keyof typeof actionRegistry
 ) {
+  
   const callback = actionRegistry[action];
   callback(node);
+  
 }
 
 function doCreate(node: LayoutNode<any>) {

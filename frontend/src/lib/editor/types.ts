@@ -1,3 +1,4 @@
+import { LayoutTheme } from "@/components/editor/theme/provider";
 import { LucideIcon } from "lucide-react";
 import { ComponentType } from "react";
 import { KeyMap } from "react-hotkeys";
@@ -61,4 +62,10 @@ export interface LayoutNodeSerialized {
   type: string;
   attributes: Record<string, any>;
   children: LayoutNodeSerialized[];
+}
+
+export interface Presentation {
+  name: string;
+  theme: LayoutTheme;
+  content: LayoutNodeSerialized[];
 }

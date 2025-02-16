@@ -22,6 +22,34 @@ export const registry: SlideTemplateEntry[] = [
     image: "/tpl/header-with-text.png",
     root: {
       type: "slide",
+      attributes: {
+        layout: "left",
+      },
+      children: [
+        {
+          type: "text",
+          attributes: {
+            text: "Заголовок слайда",
+            bold: true,
+            fontSize: "h1",
+          },
+          children: [],
+        },
+        {
+          type: "text",
+          attributes: {
+            text: "Замени этот текст на что-то интересное",
+          },
+          children: [],
+        },
+      ],
+    },
+  },
+  {
+    name: "Заголовок и текст",
+    image: "/tpl/header-with-text.png",
+    root: {
+      type: "slide",
       attributes: {},
       children: [
         {
