@@ -72,7 +72,7 @@ class HTTPAPIClient:
     def post(
         self,
         uri: str,
-        params: dict | None,
+        params: dict | None = None,
         data: dict | None = None,
         json: dict | None = None,
         headers: dict | None = None,

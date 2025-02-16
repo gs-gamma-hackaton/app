@@ -51,6 +51,7 @@ async def presentation(
     minio_client.put_object(
         bucket_name=bucket_name, object_name=filename, data=file.file, length=file_size, content_type=file.content_type
     )
+    print(bucket_name, filename)
 
     async def event_generator():
         try:
@@ -150,3 +151,26 @@ async def presentation_create_without_neuron(
     presentation_repository.create(obj)
 
     return obj
+
+
+@presentation_api_router.get(
+    '/check-function',
+    summary='test',
+    status_code=status.HTTP_201_CREATED,
+)
+async def presentation_create_without_neuron(
+    bucket_name,
+    path_to_file,
+    session: Annotated[Session, Depends(get_session)],
+):
+    from utils.parsing.chat_bot.chat_bot import Chatbot
+    from utils.parsing.file.docx_type import MinIODocProcessor
+
+    docx_parsing_minio = MinIODocProcessor(minio_client=minio_client, bucket_name=bucket_name)
+    json_dump_file = docx_parsing_minio.process_minio_document(object_path=path_to_file)
+
+    chat_bot = Chatbot()
+    processed_json = chat_bot.process_json(json_dump_file)
+    print(processed_json)
+
+    return processed_json
