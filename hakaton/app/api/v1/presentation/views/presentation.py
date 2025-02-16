@@ -153,7 +153,7 @@ async def presentation_create_without_neuron(
     return obj
 
 
-@presentation_api_router.get(
+@presentation_api_router.post(
     '/check-function',
     summary='test',
     status_code=status.HTTP_201_CREATED,
