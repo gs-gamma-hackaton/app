@@ -158,7 +158,7 @@ async def presentation_create_without_neuron(
     summary='test',
     status_code=status.HTTP_201_CREATED,
 )
-async def presentation_create_without_neuron(
+async def test_function(
     bucket_name,
     path_to_file,
     session: Annotated[Session, Depends(get_session)],
