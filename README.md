@@ -35,4 +35,46 @@
 
 ## :rocket: Запуск проекта
 
-// todo
+### Подготовка
+
+Разные модули проекта находятся в ветках `feat/frontend`, `feat/backend`.
+
+### Frontend
+
+1. Создать `.env` файл по примеру `example.env`
+
+    ```
+    NEXT_PUBLIC_API_URL=http://91.236.197.66
+    NEXT_PUBLIC_GOOGLE_API_KEY=AIzaSyAwCxdpMlA1wJpMRuBZCuKoeNSp60lCCgw
+    ```
+    > API-ключ `NEXT_PUBLIC_GOOGLE_API_KEY` должен иметь права на получение шрифтов из Google Fonts
+
+2. Запустить проект с помощью Docker Compose
+
+    ```
+    docker compose up --build -d
+    ```
+
+### Nginx
+
+1. Запустить проект с помощью Docker Compose
+
+    ```
+    docker compose up --build -d
+    ```
+
+### Backend
+
+1. Создать .env файл
+2. Запустить команды
+    ```
+    make build
+    make migrate
+    make up
+    ```
+3. Для доступа к логам используется `make logs`
+
+
+### ML
+
+> поставка кода осуществляется пакетами, под чутким присмотром разработчика (прямо до сервера, минуя гит) развертывание идет по методолгии PolniyKaif
