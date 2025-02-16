@@ -13,6 +13,7 @@ RUN apt-get update \
 COPY requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 RUN pip install psycopg2-binary
+RUN python -m nltk.downloader punkt_tab
 
 WORKDIR /app
 COPY . .
