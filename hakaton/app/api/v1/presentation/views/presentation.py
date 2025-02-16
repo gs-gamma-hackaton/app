@@ -1,13 +1,13 @@
 import os
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, File, Form, status, UploadFile
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_session
-from app.api.v1.presentation.serializers import PresentationCreateSchema, FileProcessingRequest
+from app.api.v1.presentation.serializers import PresentationCreateSchema
 from app.auth.jwt_auth import check_auth
 from app.celery.tasks import send_data_to_ml
 from app.db.models.presentation import Presentation
@@ -24,7 +24,7 @@ presentation_api_router = APIRouter()
     status_code=status.HTTP_201_CREATED,
 )
 async def presentation(
-    file: Annotated[UploadFile, File()],
+    file: Annotated[UploadFile | None, File(description='Файл для загрузки (опционально)')],
     prompts: Annotated[str, Form()],
     session: Annotated[Session, Depends(get_session)],
     current_user=Depends(check_auth),
@@ -36,31 +36,40 @@ async def presentation(
         user_id=current_user.id,
     )
     presentation_db_object = presentation_repository.create(new_presentation)
-    str(presentation_db_object.id)
+    bucket_name = None
+    filename = None
+    if file:
+        # Создаем бакет если его нет
+        bucket_name = f"documents-{datetime.now().strftime('%Y-%m')}"
+        if not minio_client.bucket_exists(bucket_name):
+            minio_client.make_bucket(bucket_name)
 
-    # Создаем бакет если его нет
-    bucket_name = f"documents-{datetime.now().strftime('%Y-%m')}"
-    if not minio_client.bucket_exists(bucket_name):
-        minio_client.make_bucket(bucket_name)
+        # Генерируем уникальное имя файла
+        filename = f"{os.urandom(8).hex()}.{file.filename.split('.')[-1]}"
 
-    # Генерируем уникальное имя файла
-    filename = f"{os.urandom(8).hex()}.{file.filename.split('.')[-1]}"
-
-    file_size = os.fstat(file.file.fileno()).st_size
-    # Загружаем файл в MinIO
-    minio_client.put_object(
-        bucket_name=bucket_name, object_name=filename, data=file.file, length=file_size, content_type=file.content_type
-    )
-    print(bucket_name, filename)
+        file_size = os.fstat(file.file.fileno()).st_size
+        # Загружаем файл в MinIO
+        minio_client.put_object(
+            bucket_name=bucket_name,
+            object_name=filename,
+            data=file.file,
+            length=file_size,
+            content_type=file.content_type,
+        )
 
     async def event_generator():
         try:
-            yield "data: {{\"status\": \"processing\", \"message\": \"Начало обработки\"}}\n\n"
-
-            result = await send_data_to_ml(
-                '',
-                prompts,
-            )
+            yield f"data: {{\"status\": \"processing\", \"message\": \"Начало обработки\", \"pres_id\": {presentation_db_object.id}}}\n\n"
+            if filename and bucket_name:
+                result = await send_data_to_ml(
+                    filename=filename,
+                    bucket_name=bucket_name,
+                    prompts=prompts,
+                )
+            else:
+                result = await send_data_to_ml(
+                    prompts=prompts,
+                )
             yield f"data: {{\"status\": \"completed\", \"result\": {result}}}\n\n"
 
         except Exception as e:
@@ -151,27 +160,3 @@ async def presentation_create_without_neuron(
     presentation_repository.create(obj)
 
     return obj
-
-
-
-
-@presentation_api_router.post(
-    '/check-function',
-    summary='test',
-    status_code=status.HTTP_201_CREATED,
-)
-async def test_function(
-    data: FileProcessingRequest,
-    session: Annotated[Session, Depends(get_session)],
-):
-    from utils.parsing.chat_bot.chat_bot import Chatbot
-    from utils.parsing.file.docx_type import MinIODocProcessor
-
-    docx_parsing_minio = MinIODocProcessor(minio_client=minio_client, bucket_name=data.bucket_name)
-    json_dump_file = docx_parsing_minio.process_minio_document(object_path=data.path_to_file)
-
-    chat_bot = Chatbot()
-    processed_json = chat_bot.process_json(json_dump_file)
-    print(processed_json)
-
-    return processed_json

@@ -1,7 +1,7 @@
 [project]
-name = 'weather-service'
+name = 'hakaton'
 version = '0.1.0'
-description = 'Сервис погоды'
+description = 'Service-prekol'
 
 dependencies = [
     "pydantic",

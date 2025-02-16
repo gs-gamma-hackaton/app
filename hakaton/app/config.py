@@ -45,10 +45,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_MINUTES: int
 
-    # chatbot
-    MODEL_URL: str
-    MODEL: str
-    OPENAPI_KEY: str
+    # ML
+    MLHOST: str
 
 
 settings = Settings(_env_file='.environment')
