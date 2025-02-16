@@ -7,7 +7,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_session
-from app.api.v1.presentation.serializers import PresentationCreateSchema
+from app.api.v1.presentation.serializers import PresentationCreateSchema, FileProcessingRequest
 from app.auth.jwt_auth import check_auth
 from app.celery.tasks import send_data_to_ml
 from app.db.models.presentation import Presentation
@@ -153,21 +153,22 @@ async def presentation_create_without_neuron(
     return obj
 
 
+
+
 @presentation_api_router.post(
     '/check-function',
     summary='test',
     status_code=status.HTTP_201_CREATED,
 )
 async def test_function(
-    bucket_name: str,
-    path_to_file: str,
+    data: FileProcessingRequest,
     session: Annotated[Session, Depends(get_session)],
 ):
     from utils.parsing.chat_bot.chat_bot import Chatbot
     from utils.parsing.file.docx_type import MinIODocProcessor
 
-    docx_parsing_minio = MinIODocProcessor(minio_client=minio_client, bucket_name=bucket_name)
-    json_dump_file = docx_parsing_minio.process_minio_document(object_path=path_to_file)
+    docx_parsing_minio = MinIODocProcessor(minio_client=minio_client, bucket_name=data.bucket_name)
+    json_dump_file = docx_parsing_minio.process_minio_document(object_path=data.path_to_file)
 
     chat_bot = Chatbot()
     processed_json = chat_bot.process_json(json_dump_file)

@@ -18,3 +18,9 @@ class PresentationCreateSchema(BaseModel):
 
 class PresentationUpdateSchema(PresentationCreateSchema):
     ...
+
+
+
+class FileProcessingRequest(BaseModel):
+    bucket_name: str
+    path_to_file: str
