@@ -80,7 +80,7 @@ export default function Page() {
                 <Presentation />
               </TableCell>
               <TableCell className="group-hover:text-gray-300">
-                {item.data.name}
+                {item.data?.name}
               </TableCell>
               <TableCell className="flex justify-end gap-2">
                 <Button variant={"ghost"} size={"icon"} asChild>

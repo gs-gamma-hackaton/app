@@ -1,10 +1,15 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { createNewPresentation } from "@/lib/slide";
 import { Import, Sparkles, User, VibrateOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import PromptForm from "./components/prompt-form";
 
 export default function Page() {
+  const router = useRouter();
   return (
     <div className="flex flex-col items-center px-16 py-24 font-landing">
       <div className="space-y-2 text-center">
@@ -24,7 +29,13 @@ export default function Page() {
         <div className="h-0.5 flex-grow bg-primary"></div>
       </div>
       <div className="mt-4 grid w-full grid-cols-3 gap-4">
-        <button className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110">
+        <button
+          className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110"
+          onClick={async () => {
+            const result = await createNewPresentation();
+            router.push(`/editor/${result.id}`);
+          }}
+        >
           <div className="w-min rounded bg-black/15 p-2">
             <Sparkles />
           </div>
@@ -35,17 +46,20 @@ export default function Page() {
             <p>Создавайте свою презентацию с нуля</p>
           </div>
         </button>
-        <button className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-violet-500 to-fuchsia-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110">
+        <Link
+          href={"/profile"}
+          className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-violet-500 to-fuchsia-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110"
+        >
           <div className="w-min rounded bg-black/15 p-2">
             <User />
           </div>
           <div className="space-y-2 text-left">
             <h1 className="text-xl font-bold text-white">
-              Войти в личный кабинет
+              Перейти в личный кабинет
             </h1>
             <p>Вернитесь к тому, что Вы уже создали</p>
           </div>
-        </button>
+        </Link>
         <button className="flex flex-col items-start gap-12 rounded-lg bg-gradient-to-tr from-pink-500 to-red-500 p-4 transition animate-in fade-in slide-in-from-top-8 duration-2000 hover:brightness-110">
           <div className="w-min rounded bg-black/15 p-2">
             <Import />
