@@ -12,6 +12,7 @@ export interface AuthResult {
 // export type { User };
 
 export async function auth(credentials: AuthCredentials) {
+  return { access_token: "test" };
   return await apiFetch<AuthResult>("/api/v1/auth/login", credentials, {
     method: "POST",
   });

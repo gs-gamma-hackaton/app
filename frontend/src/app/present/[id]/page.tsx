@@ -1,6 +1,7 @@
 "use client";
 
 import { get } from "@/api/presentation";
+import { useGoogleFonts } from "@/components/context/fonts";
 import { useThemeContext } from "@/components/editor/theme/provider";
 import { createFragmentNode } from "@/lib/editor/helpers";
 import { LayoutNode } from "@/lib/editor/node";
@@ -17,6 +18,7 @@ export default function Home() {
     queryFn: () => get(parseInt(id as string)),
   });
   const { theme, setTheme } = useThemeContext();
+  const { addFont } = useGoogleFonts();
 
   const root = useMemo(() => {
     const node = createFragmentNode();
@@ -28,6 +30,8 @@ export default function Home() {
   useEffect(() => {
     if (!data) return;
     setTheme(data.data.theme);
+    addFont(data.data.theme.fonts.heading);
+    addFont(data.data.theme.fonts.text);
   }, [data]);
 
   if (isLoading) {
